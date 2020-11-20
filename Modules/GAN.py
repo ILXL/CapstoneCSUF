@@ -49,6 +49,8 @@ class GAN():
 		else:
 			self.input_shape = input_shape
 	
+
+	### Built-in Loss Functions
 	def discriminatorLoss(self,real_output, fake_output):
 		# return tf.reduce_mean(real_output, fake_output)
 		cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
@@ -76,15 +78,20 @@ class GAN():
 	def generatorMSELoss(self, fake_output):
 		# return tf.reduce_reduce_mean(real_output, fake_output)
 		return 0.5 * tf.reduce_mean((fake_output - 0.9)**2)
+	
+	
 
-
-
+	
 	def initializeNetworks(self,generator=None,discriminator=None):
-		"""
-		Allows users to create new generator and discriminators from scratch
+		"""Allows users to create new generator and discriminators from scratch
 		or use their own generator/discriminator
-		@param generator: If None, create a new pre-built generator network. Assign otherwise
-		@param discriminator: same as generator
+		
+		Args:
+			generator (tf.keras.model): If None, create a new pre-built generator network. Assign otherwise
+			discriminator(tf.keras.model): same as generator
+		
+		Returns:
+			None
 		"""
 		if generator == None:
 			raise ValueError("No Generator Network was initialized.")
@@ -98,10 +105,14 @@ class GAN():
 	
 
 	def createDatasets(self,size=20,dataset=None,results=None):
-		"""
-		Returns a training and validation set
-		@param dataset: Original dataset to be shuffled and batch
-		@param size: Size of batch
+		"""Returns a training and validation set
+		
+		Args:
+			dataset: Original dataset to be shuffled and batch
+			size: Size of batch
+		
+		Returns:
+			Pandas DataFrame
 		"""
 		dataset = dataset.copy()
 		results = np.array(dataset.pop('real'))
@@ -190,11 +201,15 @@ class GAN():
 		return real_batch_data
 
 	def train_network(self, epochs=10, batch_size=32, history_steps=1, checkpoint_path='E:\\training_checkpoints'):
-		"""
-		Train the network for a number of epochs.
-		@param epochs: Number of times it goes through a dataset
-		@param batch_size: Number of examples when training
-		@param history_steps: Take a snapshot of generator distribtuion for every number of steps
+		"""Train the network for a number of epochs.
+
+		Args:
+			epochs (int): Number of times it goes through a dataset
+			batch_size (int): Number of examples when training
+			history_steps(int): Take a snapshot of generator distribtuion for every number of steps
+		
+		Returns:
+			None
 		"""
 
 		checkpoint_prefix = os.path.join(checkpoint_path, "ckpt")
@@ -219,15 +234,6 @@ class GAN():
 		def addEpochToHistory(tensor):
 			self.distribution_history.append(tensor)
 					
-		def checkArrayDifference(output):
-			numSame = 0
-			for x in output:
-				random_array = rand.choice(output)
-				values = Counter(np.isclose(x,random_array, rtol=.5))
-				if values[True] == len(x): numSame = numSame + 1
-			print(numSame)
-			return numSame
-
 		trackHistory(self)
 
 		if self.generator == None or self.discriminator == None:

@@ -9,17 +9,36 @@ from math import ceil
 
 
 def truncate(name):
-        if len(name) > 20:
-            return name[:21]
-        return name
+    """Limits the number of characters within a string to 20 characters
+    
+    Args:
+        name 
+    
+    """
+    if len(name) > 20:
+        return name[:21]
+    return name
     
 
 def getFeatures(columnList, *args):
+    """Retrieve column names from a Pandas DataFrame based on a criteria
+    
+    Example:
+        Retrieve all quizzes - getFeatures(DataFrame, 'Quiz')
+        Returns all column names within DataFrame that has Quiz in the name
+    
+    Args:
+        columnList (DataFrame): column values
+        args (str): Keywords to look for in column values
+
+    Returns:
+        Numpy array of column names that match args keywords
+    """
     if len(args) == 0:
         return np.array([k for k in dataset.columns.values if k != 'real'])
     else:
         features = set()
-        for columnName in columnList:
+        for columnName in columnList.columns.values:
             for keyword in args:
                 if keyword.lower() in columnName.lower():
                     features.add(columnName)
@@ -27,6 +46,20 @@ def getFeatures(columnList, *args):
         return np.array(list(features))
 
 def showPerformance(dataset: pd.DataFrame, title: str, save_path='./Project_Data/StudentGradeHeatMap.png'):
+    """Display line plot of average performance among features within a DataFrame
+    
+    Note: Limited to 14 features for best visual experience
+
+    Args:
+        dataset (DataFrame): Student Grades for assignments
+        title (str): Title of plot to be generated
+        save_path (str): Save path for plot image
+
+    Returns:
+        Plot of average grades for assignments (columns) from a dataset
+    """
+    
+    
     if len(dataset) != 0:
         plt.close()
         size = min(14, len(dataset.columns.values))
@@ -44,6 +77,22 @@ def showPerformance(dataset: pd.DataFrame, title: str, save_path='./Project_Data
     plt.close()
 
 def showPerformanceOverlap(dataset1: pd.DataFrame, dataset2: pd.DataFrame, title: str, save_path='./Project_Data/StudentGradeHeatMap.png'):
+    """Display line plots of average performance among features for two DataFrames
+
+    Visualize how two DataFrames are different from each other
+    
+    Note: Limited to 14 features for best visual experience
+
+    Args:
+        dataset1 (DataFrame): Student Grades for assignments
+        dataset2 (DataFrame): Student Grades for assignments
+        title (str): Title of plot to be generated
+        save_path (str): Save path for plot image
+
+    Returns:
+        Plot of average grades for assignments (columns) from a dataset
+    """
+    
     if len(dataset1) != 0:
         plt.close()
         size = min(14, len(dataset1.columns.values))
@@ -66,7 +115,19 @@ def showPerformanceOverlap(dataset1: pd.DataFrame, dataset2: pd.DataFrame, title
         plt.close()
 
 def showStudentGradeHeatMap(dataset: pd.DataFrame, save=True, save_path='./Project_Data/StudentGradeHeatMap.png', title="Student Grades Over a Semester"):
-    """
+    """Display heatmap of random students within a DataFrame
+
+    Note: Limited to 14 features for best visual experience
+
+    Args:
+        dataset (DataFrame): Student Grades for assignments
+        save (bool): Determine if plot should be saved or just s hown
+        save_path (str): Save path for plot image
+        title (str): Title of plot to be generated
+    
+    Returns:
+        Heatmap of student grades
+
     Credit: Matplotlib.org for majority of logic for the heatmap
     """
     plt.close()
@@ -116,6 +177,19 @@ def showStudentGradeHeatMap(dataset: pd.DataFrame, save=True, save_path='./Proje
 
 def showStudentCorrelation(dataset: pd.DataFrame, save=True, save_path='./Project_Data/CorrelationMatrix.png'):
     """
+    Display correlation values of features within a dataframe
+
+    Note: Limited to 15 features for best visual experience
+
+    Args:
+        dataset (DataFrame): Student grades and assignments
+        save (bool): Determine if plot should be saved or just s hown
+        save_path (str): Save path for plot image
+        title (str): Title of plot to be generated
+    
+    Returns:
+        Correlation matrix of features within a dataframe
+
     Credit: Matplotlib.org for majority of logic for the heatmap
     """
 
@@ -158,13 +232,19 @@ def showStudentCorrelation(dataset: pd.DataFrame, save=True, save_path='./Projec
 
 
 def splitKeywords(dataframe, *args):
-    """
-    Splits into different datasets based on the keyword
-    splitKeywords("Real): Pandas dataset that contains the word "Real"
-    Primarily used to split the dataset into different types of grading scales
+    """Gathers all columns that match an args value
+    
+    Example:
+        splitKeywords(Data, 'Real', 'Percentage')
+        Returns: [['Real1', 'Real2'..], ['Percentage1', 'Percentage2'..]]
 
-    @param: dataset: Original dataset
-    @param: *args: Keywords to split by
+    Args:
+        dataset (DataFrame): Student grades and assignments
+        args (str): Keywords to look for in column to extract
+    
+    Returns:
+        Returns groups of columns with arg value keywords in it
+
     """
     dataset_splits = {}
     for kw in args:
@@ -201,12 +281,17 @@ def cleanDataName(dataset: pd.DataFrame, readable=True):
 
 
 def cleanDataset(dataset: pd.DataFrame):
-    """
-    Cleans the columns
+    """Cleans the columns
+    
     Removes empty cells and replaces it with a 0 or null keyword
     Columns that contain 25% missing data are automatically dropped
 
-    @param: dataset: Original dataset
+
+    Args:
+        dataset (DataFrame): Student grades and assignments
+    
+    Returns:
+        Returns Dataframe with numerical values
     """
 
     # Remove a column if its column contains more than 25% empty values

@@ -63,12 +63,12 @@ while True:
         generated_class.to_csv(folder + 'GeneratedData.csv')
 
         # Create graphs and performance of trained network
-        showStudentGradeHeatMap(d, save=True,
+        showStudentGradeHeatMap(generated_class, save=True,
                                 save_path=folder + 'GeneratedHeatmap.png',  
                                 title="Generated Student Grades Over a Semester")
-        createHistogram(d, save_path=folder + 'GeneratedStudentHistogram.png', title='Histogram of Generated Student Grades')
-        showPerformance(d, 'Generated Student Performance', save_path=folder + 'GeneratedStudentPerformance.png')
-        showPerformanceOverlap(education_data, d, 'Class Average Performance',  save_path=folder + 'ClassPerformance.png')
+        createHistogram(generated_class, save_path=folder + 'GeneratedStudentHistogram.png', title='Histogram of Generated Student Grades')
+        showPerformance(generated_class, 'Generated Student Performance', save_path=folder + 'GeneratedStudentPerformance.png')
+        showPerformanceOverlap(education_data, generated_class, 'Class Average Performance',  save_path=folder + 'ClassPerformance.png')
         break
     except Exception as e:
         print(e)
